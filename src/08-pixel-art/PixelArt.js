@@ -1,17 +1,20 @@
-import React from 'react'
+import { createContext, useState, useContext } from 'react'
+const ColorContext = createContext();
 
-function ColorPicker () {
+function ColorPicker ({setCurrentColor}) {
   const colors = ['red', 'blue', 'yellow', 'green', 'black', 'white', 'purple']
   return (
     <div>
       <h1>Choose a color</h1>
-      {colors.map(color => <button key={color} style={{ backgroundColor: color }} />)}
+      {colors.map(color => <button key={color} style={{ backgroundColor: color }} onClick={() => setCurrentColor(color)}/>)}
     </div>
   )
 }
 
 function Pixel () {
-  return <div style={{ height: '20px', width: '20px', backgroundColor: 'lightGrey', margin: '1px' }} />
+  const [background, setBackground] = useState("lightGrey")
+  const color = useContext(ColorContext);
+  return <div onClick={() => setBackground(color)} style={{ height: '20px', width: '20px', backgroundColor: `${background}`, margin: '1px' }} />
 }
 
 function Pixels () {
@@ -25,10 +28,11 @@ function Pixels () {
 }
 
 export default function PixelArt () {
+  const [currentColor, setCurrentColor] = useState("lightGrey")
   return (
-    <div>
-      <ColorPicker />
+    <ColorContext.Provider value={currentColor} >
+      <ColorPicker setCurrentColor={setCurrentColor}/>
       <Pixels />
-    </div>
+    </ColorContext.Provider>
   )
 }
